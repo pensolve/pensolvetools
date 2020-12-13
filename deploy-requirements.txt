@@ -1,0 +1,5 @@
+coverage
+codecov
+pylint
+pytest
+twine
