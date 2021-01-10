@@ -23,7 +23,7 @@ def geomean(x):
     return np.exp(a.sum()/len(a))
 
 
-def match(x0, x, match_type):
+def match(x0, x, match_type=1):
     if match_type == 0:
         return np.where(x == x0)[0][0]
     elif match_type == -1:
@@ -66,7 +66,17 @@ def p_sum(params):
     return p_all
 
 
-def vlookup(x, x0, y, approx=True):
+def lookup(x, x0, y, approx=True):
+    """
+    Equivalent to the spreadsheet LOOKUP,
+    but supports the approx option like VLOOKUP
+
+    :param x:
+    :param x0:
+    :param y:
+    :param approx:
+    :return:
+    """
     if isinstance(x[0], str):
         x0 = str(x0)
     if not approx:  # need exact match
@@ -76,11 +86,30 @@ def vlookup(x, x0, y, approx=True):
         return y[inds]
 
 
-def lookup(x0, x, y=None):
-    if y is None:
-        y = x
-    inds = np.searchsorted(x, x0, side='right') - 1
-    return y[inds]
+def vlookup(vals, x0, ind, approx=True):
+    """
+    Equivalent to the spreadsheet VLOOKUP function
+    :param vals: array_like
+        2d array of values - first column is searched for index
+    :param x0:
+    :param ind:
+    :param approx:
+    :return:
+    """
+    if isinstance(vals[0][0], str):
+        x0 = str(x0)
+    if not approx:  # need exact match
+        return vals[ind, np.where(x0 == vals[0])[0][0]]
+    else:
+        inds = np.searchsorted(vals[0], x0, side='right') - 1
+        return vals[ind, inds]
+
+
+# def lookup(x0, x, y=None):  # TODO: delete
+#     if y is None:
+#         y = x
+#     inds = np.searchsorted(x, x0, side='right') - 1
+#     return y[inds]
 
 
 def p_or(**args):
@@ -89,3 +118,7 @@ def p_or(**args):
 
 def p_and(**args):
     return np.logical_and(**args)
+
+
+def concat(parts):
+    return ''.join([str(x) for x in parts])
