@@ -86,9 +86,10 @@ def lookup(x, x0, y, approx=True):
         return y[inds]
 
 
-def vlookup(vals, x0, ind, approx=True):
+def vlookup(x0, vals, ind, approx=True):
     """
     Equivalent to the spreadsheet VLOOKUP function
+
     :param vals: array_like
         2d array of values - first column is searched for index
     :param x0:
@@ -99,10 +100,10 @@ def vlookup(vals, x0, ind, approx=True):
     if isinstance(vals[0][0], str):
         x0 = str(x0)
     if not approx:  # need exact match
-        return vals[ind, np.where(x0 == vals[0])[0][0]]
+        return vals[ind][np.where(x0 == vals[0])[0][0]]
     else:
         inds = np.searchsorted(vals[0], x0, side='right') - 1
-        return vals[ind, inds]
+        return vals[ind][inds]
 
 
 # def lookup(x0, x, y=None):  # TODO: delete
