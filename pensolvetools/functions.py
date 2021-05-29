@@ -100,10 +100,10 @@ def vlookup(x0, vals, ind, approx=True):
     if isinstance(vals[0][0], str):
         x0 = str(x0)
     if not approx:  # need exact match
-        return vals[ind][np.where(x0 == vals[0])[0][0]]
+        return vals[int(ind)][np.where(x0 == vals[0])[0][0]]
     else:
         inds = np.searchsorted(vals[0], x0, side='right') - 1
-        return vals[ind][inds]
+        return vals[ind][int(inds)]
 
 
 # def lookup(x0, x, y=None):  # TODO: delete
