@@ -114,11 +114,15 @@ def vlookup(x0, vals, ind, approx=True):
 
 
 def p_or(**args):
-    return np.logical_or(**args)
+    if len(args) != 2:
+        return np.logical_or.reduce(np.array(args))
+    return np.logical_or(*args)
 
 
 def p_and(**args):
-    return np.logical_and(**args)
+    if len(args) != 2:
+        return np.logical_and.reduce(np.array(args))
+    return np.logical_and(*args)
 
 
 def concat(parts):
