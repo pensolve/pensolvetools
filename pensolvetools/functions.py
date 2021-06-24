@@ -25,11 +25,11 @@ def geomean(x):
 
 def match(x0, x, match_type=1):
     if match_type == 0:
-        return np.where(x == x0)[0][0]
+        return np.where(np.array(x) == x0)[0][0].item()
     elif match_type == -1:
-        return np.searchsorted(x, x0, side="right")
+        return len(x) - np.searchsorted(np.array(x)[::-1], x0, side="left")
     elif match_type == 1:
-        return np.searchsorted(x, x0, side="left")
+        return np.searchsorted(x, x0, side="right") - 1
 
 
 def p_max(params):
@@ -127,3 +127,7 @@ def p_and(**args):
 
 def concat(parts):
     return ''.join([str(x) for x in parts])
+
+
+class SheetObj(object):
+    pass
