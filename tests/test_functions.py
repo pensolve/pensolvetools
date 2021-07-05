@@ -8,6 +8,10 @@ def test_sanity():
 
 def test_concat():
     assert fn.concat(['a', 4, 't']) == 'a4t'
+    a = np.array([1500, 1200])
+    b = np.array([1400, 1500])
+    vals = fn.concat([a, '-', b])
+    assert vals[0] == '1500-1400', vals
 
 
 def test_match_case0():
@@ -44,6 +48,25 @@ def test_match_case_neg1():
     ind = fn.match(x0, x, -1)
     assert ind == 3, ind
 
+
+def test_p_min():
+    assert fn.p_min([4, [5, 3], 2]) == 2
+    assert fn.p_min([5, 'cow', 3]) == 3
+    assert fn.p_min([5, np.array(4), 8]) == 4
+
+def test_p_max():
+    assert fn.p_max([4, [5, 3], 2]) == 5
+    assert fn.p_max([5, 'cow', 3]) == 5
+    assert fn.p_max([5, np.array(8), 3]) == 8
+
+
+def test_p_sum():
+    assert fn.p_sum([4, [5, 3], 2]) == 14
+    assert fn.p_sum([5, 'cow', 3]) == 8
+    assert fn.p_sum([5, np.array(4), 8]) == 17
+
+
+
 if __name__ == '__main__':
-    test_match_case_neg1()
+    test_concat()
 
