@@ -50,12 +50,16 @@ def test_match_case_neg1():
 
 
 def test_p_min():
-    assert fn.p_min([4, [5, 3], 2]) == 2
+    vals = fn.p_min([4, [5, 3], 2])
+    assert vals[0] == 2
+    assert vals[1] == 2
     assert fn.p_min([5, 'cow', 3]) == 3
     assert fn.p_min([5, np.array(4), 8]) == 4
 
 def test_p_max():
-    assert fn.p_max([4, [5, 3], 2]) == 5
+    vals = fn.p_max([4, [5, 3], 2])
+    assert vals[0] == 5
+    assert vals[1] == 4
     assert fn.p_max([5, 'cow', 3]) == 5
     assert fn.p_max([5, np.array(8), 3]) == 8
 

@@ -32,7 +32,7 @@ def match(x0, x, match_type=1):
         return np.searchsorted(x, x0, side="right") - 1
 
 
-def clean_params_for_xlsx_fns(params):
+def clean_params_for_sum_fns(params):
     p_all = []
     for param in params:
         if hasattr(param, "__len__"):
@@ -47,18 +47,61 @@ def clean_params_for_xlsx_fns(params):
     return p_all
 
 
+def clean_params_for_eval_fns(params):
+    # TODO: this is tricky because it is used to handle repeated expressions, but also MAX across single values and lists
+    # TODO: to remedy could include an output_len parameter, where if it is repating then output should have len.
+    n = None
+    for param in params:
+        if hasattr(param, "__len__") and not isinstance(param, str):
+            if hasattr(param, 'size') and param.size == 1:
+                continue  # scalar array
+            if n is not None and n != len(param):
+                raise ValueError("Cannot evaluate fn with different length args")
+            n = len(param)
+    p_all = []
+    for param in params:
+        if isinstance(param, str):
+            continue
+        if hasattr(param, "__len__"):
+            if hasattr(param, 'size') and param.size == 1:
+                if n is not None:
+                    param = [np.asscalar(param)] * n
+                else:
+                    param = [np.asscalar(param)]
+            pnew = [p for p in param if not isinstance(p, str)]
+            p_all.append(pnew)
+        else:
+            if n is not None:
+                p_all.append([param] * n)
+            else:
+                p_all.append([param])
+    if not len(p_all):
+        return None
+    return np.array(p_all)
+
+
 def p_max(params):
-    p_all = clean_params_for_xlsx_fns(params)
-    return None if p_all is None else max(p_all)
+    p_all = clean_params_for_eval_fns(params)
+    if p_all is None:
+        return None
+    if len(np.shape(p_all)) > 1 and np.shape(p_all)[1] > 1:
+        return np.max(p_all, axis=0)
+    else:
+        return np.max(p_all)
 
 
 def p_min(params):
-    p_all = clean_params_for_xlsx_fns(params)
-    return None if p_all is None else min(p_all)
+    p_all = clean_params_for_eval_fns(params)
+    if p_all is None:
+        return None
+    if len(np.shape(p_all)) > 1 and np.shape(p_all)[1] > 1:
+        return np.min(p_all, axis=0)
+    else:
+        return np.min(p_all)
 
 
 def p_sum(params):
-    p_all = clean_params_for_xlsx_fns(params)
+    p_all = clean_params_for_sum_fns(params)
     return None if p_all is None else sum(p_all)
 
 
